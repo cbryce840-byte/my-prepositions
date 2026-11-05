@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preposition Adventure Game</title>
+    <title>Preposition Worksheet Adventure</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -51,7 +51,7 @@
             transform: scale(1.08);
         }
         .drop-zone {
-            min-width: 110px;
+            min-width: 120px;
             border: 3px dashed #4D96FF;
             background-color: rgba(77, 150, 255, 0.1);
             transition: all 0.3s ease;
@@ -76,7 +76,7 @@
                     <h1 class="text-2xl md:text-3xl font-black text-darkink">
                         Preposition <span class="text-skyblue">Worksheet</span> Adventure
                     </h1>
-                    <p class="text-xs text-gray-600 font-bold">Look at the picture, read the sentence, and drag the correct preposition tile!</p>
+                    <p class="text-xs text-gray-600 font-bold">Look at the position in the picture, read the sentence, and drag the correct preposition tile!</p>
                 </div>
             </div>
 
@@ -108,7 +108,7 @@
             <div class="flex items-center justify-between bg-indigo-900 text-white rounded-3xl p-5 shadow-lg">
                 <div class="text-left">
                     <span class="text-xs font-extrabold uppercase px-3 py-1 bg-skyblue text-white rounded-full">Worksheet Quest (<span id="quest-counter">1</span> / 40)</span>
-                    <h2 class="text-xl md:text-2xl font-black mt-1">Complete the sentence using the picture!</h2>
+                    <h2 class="text-xl md:text-2xl font-black mt-1">Complete the sentence using the worksheet picture!</h2>
                 </div>
                 <button onclick="speakInstruction()" class="bg-amber-400 hover:bg-amber-500 text-darkink font-black py-2.5 px-6 rounded-2xl shadow-md flex items-center space-x-2 transition transform active:scale-95 shrink-0">
                     <i class="fa-solid fa-volume-high text-lg"></i>
@@ -116,13 +116,15 @@
                 </button>
             </div>
 
-            <!-- Worksheet Question Card (Picture + Sentence with Drop Zone) -->
+            <!-- Worksheet Question Card (Detailed Contextual Picture + Sentence with Drop Zone) -->
             <div class="bg-white border-4 border-indigo-100 rounded-3xl p-8 shadow-xl flex flex-col md:flex-row items-center justify-center gap-8">
                 
-                <!-- Picture Illustration Box -->
-                <div class="w-48 h-48 bg-gradient-to-br from-amber-50 to-pink-50 border-4 border-amber-200 rounded-3xl flex flex-col items-center justify-center p-4 shadow-inner">
-                    <span id="quest-image" class="text-7xl mb-2 animate-bounce-gentle">🐱</span>
-                    <span id="quest-object" class="text-xs font-black uppercase text-amber-900 bg-white px-3 py-1 rounded-full shadow-sm">The Cat & Table</span>
+                <!-- Detailed Positional Illustration Box -->
+                <div class="w-56 h-48 bg-gradient-to-br from-amber-50 via-sky-50 to-pink-50 border-4 border-amber-300 rounded-3xl flex flex-col items-center justify-center p-3 shadow-inner relative overflow-hidden">
+                    <div id="quest-scene-illustration" class="text-6xl flex items-center justify-center space-x-2">
+                        <!-- Rendered dynamically showing subject & object position -->
+                    </div>
+                    <span id="quest-object-label" class="text-[11px] font-black uppercase text-amber-900 bg-white/90 px-3 py-1 rounded-full shadow-sm mt-3">The Cat & Table</span>
                 </div>
 
                 <!-- Sentence Fill-in-the-blank Box -->
@@ -163,26 +165,26 @@
     <!-- SCRIPT LOGIC -->
     <script>
         const WORKSHEET_QUESTS = [
-            { subject: "The cat", object: "the table", emoji: "🐱", objEmoji: "🪵", correct: "on", options: ["on", "under", "behind"] },
-            { subject: "The dog", object: "the bed", emoji: "🐶", objEmoji: "🛏️", correct: "under", options: ["under", "on", "beside"] },
-            { subject: "The ball", object: "the chair", emoji: "⚽", objEmoji: "🪑", correct: "behind", options: ["behind", "in", "on"] },
-            { subject: "The bird", object: "the tree", emoji: "🐦", objEmoji: "🌳", correct: "above", options: ["above", "under", "in"] },
-            { subject: "The rabbit", object: "the box", emoji: "🐰", objEmoji: "📦", correct: "inside", options: ["inside", "on", "under"] },
-            { subject: "The bicycle", object: "the wall", emoji: "🚲", objEmoji: "🧱", correct: "beside", options: ["beside", "in", "above"] },
-            { subject: "The flowers", object: "the fence", emoji: "🌷", objEmoji: "🏡", correct: "in front of", options: ["in front of", "behind", "under"] },
-            { subject: "The shoes", object: "the door", emoji: "👟", objEmoji: "🚪", correct: "near", options: ["near", "on", "above"] },
-            { subject: "The puppy", object: "the chairs", emoji: "🐶", objEmoji: "🪑🪑", correct: "between", options: ["between", "on", "under"] },
-            { subject: "The kite", object: "the house", emoji: "🪁", objEmoji: "🏠", correct: "over", options: ["over", "in", "under"] },
-            { subject: "The apple", object: "the table", emoji: "🍎", objEmoji: "🪵", correct: "on", options: ["on", "under", "next to"] },
-            { subject: "The doll", object: "the car", emoji: "🪆", objEmoji: "🚗", correct: "in", options: ["in", "on", "under"] },
-            { subject: "The boy", object: "the box", emoji: "👦", objEmoji: "📦", correct: "behind", options: ["behind", "on", "next to"] },
-            { subject: "The shoes", object: "the table", emoji: "👞", objEmoji: "🪵", correct: "under", options: ["under", "in", "on"] },
-            { subject: "The girl", object: "the chair", emoji: "👧", objEmoji: "🪑", correct: "next to", options: ["next to", "in", "on"] },
-            { subject: "The giraffe", object: "the basket", emoji: "🦒", objEmoji: "🧺", correct: "behind", options: ["behind", "under", "in"] },
-            { subject: "The ratel", object: "the tree", emoji: "🦝", objEmoji: "🌳", correct: "under", options: ["under", "behind", "next to"] },
-            { subject: "The mouse", object: "the chair", emoji: "🐭", objEmoji: "🪑", correct: "under", options: ["under", "in front of", "on"] },
-            { subject: "The clock", object: "the door", emoji: "⏰", objEmoji: "🚪", correct: "above", options: ["above", "on", "under"] },
-            { subject: "The books", object: "the shelf", emoji: "📚", objEmoji: "🪵", correct: "on", options: ["on", "in", "under"] }
+            { subject: "The cat", object: "the table", sceneHtml: '<span class="text-5xl">🐱</span><span class="text-4xl absolute bottom-6">🪵</span>', correct: "on", options: ["on", "under", "behind"] },
+            { subject: "The dog", object: "the bed", sceneHtml: '<span class="text-4xl absolute top-4">🛏️</span><span class="text-4xl absolute bottom-4">🐶</span>', correct: "under", options: ["under", "on", "beside"] },
+            { subject: "The ball", object: "the chair", sceneHtml: '<span class="text-5xl">🪑</span><span class="text-3xl absolute bottom-4 left-10">⚽</span>', correct: "behind", options: ["behind", "in", "on"] },
+            { subject: "The bird", object: "the tree", sceneHtml: '<span class="text-3xl absolute top-4">🐦</span><span class="text-5xl absolute bottom-2">🌳</span>', correct: "above", options: ["above", "under", "in"] },
+            { subject: "The rabbit", object: "the box", sceneHtml: '<span class="text-5xl">📦</span><span class="text-3xl absolute top-8">🐰</span>', correct: "inside", options: ["inside", "on", "under"] },
+            { subject: "The bicycle", object: "the wall", sceneHtml: '<span class="text-5xl">🧱</span><span class="text-4xl absolute bottom-4 left-6">🚲</span>', correct: "beside", options: ["beside", "in", "above"] },
+            { subject: "The flowers", object: "the fence", sceneHtml: '<span class="text-4xl absolute top-4">🏡</span><span class="text-4xl absolute bottom-3">🌷🌷</span>', correct: "in front of", options: ["in front of", "behind", "under"] },
+            { subject: "The shoes", object: "the door", sceneHtml: '<span class="text-5xl">🚪</span><span class="text-3xl absolute bottom-4">👟👟</span>', correct: "near", options: ["near", "on", "above"] },
+            { subject: "The puppy", object: "the chairs", sceneHtml: '<span class="text-4xl">🪑🐶🪑</span>', correct: "between", options: ["between", "on", "under"] },
+            { subject: "The kite", object: "the house", sceneHtml: '<span class="text-3xl absolute top-3 right-6">🪁</span><span class="text-5xl absolute bottom-2">🏠</span>', correct: "over", options: ["over", "in", "under"] },
+            { subject: "The apple", object: "the table", sceneHtml: '<span class="text-4xl absolute top-4">🍏</span><span class="text-5xl absolute bottom-2">🪵</span>', correct: "on", options: ["on", "under", "next to"] },
+            { subject: "The doll", object: "the car", sceneHtml: '<span class="text-5xl">🚗</span><span class="text-3xl absolute top-6">🪆</span>', correct: "in", options: ["in", "on", "under"] },
+            { subject: "The boy", object: "the box", sceneHtml: '<span class="text-5xl">📦</span><span class="text-3xl absolute bottom-4 right-6">👦</span>', correct: "behind", options: ["behind", "on", "next to"] },
+            { subject: "The shoes", object: "the table", sceneHtml: '<span class="text-5xl absolute top-2">🪵</span><span class="text-3xl absolute bottom-6">👞👞</span>', correct: "under", options: ["under", "in", "on"] },
+            { subject: "The girl", object: "the chair", sceneHtml: '<span class="text-5xl">🪑</span><span class="text-4xl absolute bottom-4 left-8">👧</span>', correct: "next to", options: ["next to", "in", "on"] },
+            { subject: "The giraffe", object: "the basket", sceneHtml: '<span class="text-5xl">🧺</span><span class="text-4xl absolute top-4 left-8">🦒</span>', correct: "behind", options: ["behind", "under", "in"] },
+            { subject: "The ratel", object: "the tree", emoji: "🦝", sceneHtml: '<span class="text-5xl">🌳</span><span class="text-3xl absolute bottom-4 right-8">🦝</span>', correct: "under", options: ["under", "behind", "next to"] },
+            { subject: "The mouse", object: "the chair", sceneHtml: '<span class="text-5xl absolute top-2">🪑</span><span class="text-3xl absolute bottom-4">🐭</span>', correct: "under", options: ["under", "in front of", "on"] },
+            { subject: "The clock", object: "the door", sceneHtml: '<span class="text-3xl absolute top-4">⏰</span><span class="text-5xl absolute bottom-2">🚪</span>', correct: "above", options: ["above", "on", "under"] },
+            { subject: "The books", object: "the shelf", sceneHtml: '<span class="text-5xl absolute top-2">🪵</span><span class="text-3xl absolute top-4">📚</span>', correct: "on", options: ["on", "in", "under"] }
         ];
 
         // Expand quests to 40 by repeating/cycling with distinct variations
@@ -226,7 +228,7 @@
 
         function speakInstruction() {
             const q = QUESTS[currentQuestIndex];
-            speakText(`${q.subject} is blank ${q.object}. Choose the correct preposition tile!`);
+            speakText(`Look at the picture. ${q.subject} is blank ${q.object}. Choose the correct preposition tile!`);
         }
 
         function loadQuest() {
@@ -234,8 +236,8 @@
             isSolved = false;
 
             document.getElementById('quest-counter').innerText = q.id;
-            document.getElementById('quest-image').innerText = q.emoji;
-            document.getElementById('quest-object').innerText = `${q.subject} & ${q.object}`;
+            document.getElementById('quest-scene-illustration').innerHTML = q.sceneHtml;
+            document.getElementById('quest-object-label').innerText = `${q.subject} & ${q.object}`;
 
             // Sentence with persistent drop zone
             const sentenceBox = document.getElementById('sentence-display');
