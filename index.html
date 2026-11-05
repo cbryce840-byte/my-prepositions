@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEFL Preposition & Verb Adventure</title>
+    <title>Preposition Adventure Game</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -36,8 +36,7 @@
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
             min-height: 100vh;
-            user-select: none;
-            touch-action: none;
+            overflow-y: auto;
         }
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
@@ -73,19 +72,19 @@
         }
     </style>
 </head>
-<body class="text-darkink antialiased p-4 md:p-8">
+<body class="text-darkink antialiased p-4 md:p-8 pb-32">
 
-    <div class="max-w-6xl mx-auto space-y-6">
+    <div class="max-w-5xl mx-auto space-y-6">
         
         <!-- HEADER -->
         <header class="glass-card rounded-3xl p-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center space-x-4">
                 <div class="w-14 h-14 bg-skyblue rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg">
-                    <i class="fa-solid fa-graduation-cap"></i>
+                    <i class="fa-solid fa-compass"></i>
                 </div>
                 <div>
                     <h1 class="text-2xl md:text-3xl font-black text-darkink">
-                        TEFL <span class="text-skyblue">Preposition</span> & <span class="text-coral">Verb</span> World
+                        Preposition <span class="text-skyblue">Adventure</span> Game
                     </h1>
                     <p class="text-xs text-gray-600 font-bold">Choose the correct character and object from multiple choices, then solve 40 adventures!</p>
                 </div>
@@ -100,6 +99,17 @@
                 </div>
             </div>
         </header>
+
+        <!-- GRAMMAR DEFINITION GUIDE CARD -->
+        <div class="glass-card rounded-3xl p-6 border-4 border-skyblue/40 bg-gradient-to-r from-sky-50 to-blue-50 shadow-md">
+            <div class="flex items-center space-x-3 mb-2">
+                <div class="w-10 h-10 bg-skyblue text-white rounded-2xl flex items-center justify-center text-lg font-black shadow"><i class="fa-solid fa-lightbulb"></i></div>
+                <h3 class="text-xl font-black text-blue-900 uppercase tracking-wide">What is a Preposition?</h3>
+            </div>
+            <p class="text-base font-extrabold text-gray-800 leading-relaxed">
+                A preposition shows where something is located! Words like <span class="text-coral font-black text-lg">ON</span>, <span class="text-violet font-black text-lg">IN</span>, <span class="text-limegreen font-black text-lg">UNDER</span>, <span class="text-sky-600 font-black text-lg">BESIDE</span>, and <span class="text-amber-600 font-black text-lg">BEHIND</span> tell us the exact position of our cute characters!
+            </p>
+        </div>
 
         <!-- MAIN STAGE -->
         <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-skyblue/30 space-y-6 bg-gradient-to-b from-white to-sky-50">
@@ -118,39 +128,22 @@
                 </button>
             </div>
 
-            <!-- Interactive Play Area -->
-            <div class="relative w-full h-[450px] bg-gradient-to-br from-emerald-50 via-sky-50 to-amber-50 rounded-3xl border-4 border-dashed border-gray-300 overflow-hidden flex flex-col justify-between p-6 shadow-inner" id="play-area">
+            <!-- Interactive Play Area with ample height to prevent any cutting off -->
+            <div class="relative w-full min-h-[520px] bg-gradient-to-br from-emerald-50 via-sky-50 to-amber-50 rounded-3xl border-4 border-dashed border-gray-300 flex flex-col justify-between p-6 shadow-inner overflow-visible" id="play-area">
                 
                 <!-- Props Row (Free-floating Drop Targets) -->
-                <div class="flex flex-wrap justify-around items-center gap-4 z-10" id="props-container">
+                <div class="flex flex-wrap justify-around items-center gap-6 z-10 py-4" id="props-container">
                     <!-- Dynamically rendered environmental props -->
                 </div>
 
                 <!-- Guidance Hint -->
-                <div id="selection-hint" class="text-center font-black text-xs md:text-sm text-skyblue bg-white/80 py-1.5 px-4 rounded-full mx-auto shadow-sm">
+                <div id="selection-hint" class="text-center font-black text-sm md:text-base text-skyblue bg-white/95 py-2.5 px-6 rounded-full mx-auto shadow-sm my-4">
                     👆 Drag or Tap a Character below onto the Target Prop above!
                 </div>
 
                 <!-- Characters Row (Free-floating Figures - 3 Choices) -->
-                <div class="flex flex-wrap justify-around items-center gap-8 z-20 pb-4" id="characters-container">
+                <div class="flex flex-wrap justify-around items-center gap-8 z-20 py-6" id="characters-container">
                     <!-- Dynamically rendered character choices -->
-                </div>
-            </div>
-
-            <!-- Action Verbs Quick Challenge Bar with Clear Picture Illustration -->
-            <div class="bg-white/90 rounded-3xl p-5 border-2 border-indigo-100 shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center space-x-4">
-                    <!-- Action Illustration Card -->
-                    <div id="verb-action-card" class="w-24 h-24 bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-300 rounded-3xl flex flex-col items-center justify-center text-4xl shadow-inner shrink-0">
-                        <!-- Target Character performing action directly -->
-                    </div>
-                    <div class="space-y-1">
-                        <span class="text-xs font-black uppercase text-violet tracking-wider">Bonus Action Verb Challenge:</span>
-                        <p id="verb-prompt" class="text-sm md:text-base font-bold text-darkink">What action is the character performing in the picture card?</p>
-                    </div>
-                </div>
-                <div id="verb-options" class="flex flex-wrap gap-3">
-                    <!-- Dynamic verb choices -->
                 </div>
             </div>
 
@@ -160,8 +153,8 @@
             </div>
 
             <!-- Next Quest Button -->
-            <div class="flex justify-center pt-2">
-                <button onclick="nextQuest()" class="bg-skyblue hover:bg-blue-600 text-white font-black text-lg py-3.5 px-10 rounded-2xl shadow-xl transition transform active:scale-95 flex items-center space-x-3">
+            <div class="flex justify-center pt-4 pb-8">
+                <button onclick="nextQuest()" class="bg-skyblue hover:bg-blue-600 text-white font-black text-xl py-4 px-12 rounded-2xl shadow-xl transition transform active:scale-95 flex items-center space-x-3">
                     <span>Next Grammar Quest</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
@@ -190,15 +183,6 @@
         ];
 
         const PREPOSITIONS = ["ON", "IN", "UNDER", "BESIDE", "BEHIND"];
-        const VERB_LIST = [
-            { verb: "Jumping", actionEmoji: "💨", options: ["Jumping", "Sleeping", "Eating"] },
-            { verb: "Sleeping", actionEmoji: "💤", options: ["Sleeping", "Running", "Flying"] },
-            { verb: "Eating", actionEmoji: "🍌", options: ["Eating", "Swimming", "Jumping"] },
-            { verb: "Hiding", actionEmoji: "🙈", options: ["Hiding", "Flying", "Swimming"] },
-            { verb: "Sitting", actionEmoji: "🪑", options: ["Sitting", "Climbing", "Running"] },
-            { verb: "Peeking", actionEmoji: "👀", options: ["Peeking", "Cooking", "Driving"] },
-            { verb: "Running", actionEmoji: "🏃", options: ["Running", "Painting", "Singing"] }
-        ];
 
         const PRAISE_VARIATIONS = [
             "Fantastic job!",
@@ -207,7 +191,7 @@
             "Awesome!",
             "Brilliant thinking!",
             "Way to go!",
-            "Great job!"
+            "Good job, Dylan!"
         ];
 
         function getRandomPraise() {
@@ -220,17 +204,13 @@
             const charObj = ALL_CHARACTERS[i % ALL_CHARACTERS.length];
             const propObj = ALL_PROPS[Math.floor(i / 8) % ALL_PROPS.length];
             const prep = PREPOSITIONS[i % PREPOSITIONS.length];
-            const verbObj = VERB_LIST[i % VERB_LIST.length];
 
             QUESTS.push({
                 character: charObj.name,
                 charEmoji: charObj.emoji,
                 prop: propObj.name,
                 propEmoji: propObj.emoji,
-                preposition: prep,
-                verb: verbObj.verb,
-                verbActionEmoji: verbObj.actionEmoji,
-                verbOptions: verbObj.options
+                preposition: prep
             });
         }
 
@@ -260,7 +240,7 @@
             // Instruction Header
             document.getElementById('quest-counter').innerText = currentQuestIndex + 1;
             document.getElementById('instruction-text').innerHTML = `Drag the <span class="text-sunny font-black">${q.character}</span> <span class="text-coral underline font-black">${q.preposition}</span> the <span class="text-limegreen font-black">${q.prop}</span>!`;
-            document.getElementById('selection-hint').innerHTML = `👇 Drag or tap the <strong>${q.character}</strong> onto the <strong>${q.prop}</strong>!`;
+            document.getElementById('selection-hint').innerHTML = `👇 Drag or tap the <strong class="text-darkink">${q.character}</strong> onto the <strong class="text-darkink">${q.prop}</strong>!`;
 
             // Render 3 Props on Stage (Target Object + 2 Random Choices)
             const propsContainer = document.getElementById('props-container');
@@ -277,9 +257,9 @@
                      ondragenter="this.classList.add('highlight')"
                      ondragleave="this.classList.remove('highlight')"
                      ondrop="dropOnProp(event, '${p.name}')"
-                     class="prop-target flex flex-col items-center justify-center p-3">
-                    <span class="text-6xl filter drop-shadow-md pointer-events-none">${p.emoji}</span>
-                    <span class="text-xs font-black uppercase text-gray-700 bg-white/90 px-3 py-1 rounded-full shadow-sm mt-1 pointer-events-none">The ${p.name}</span>
+                     class="prop-target flex flex-col items-center justify-center p-4">
+                    <span class="text-7xl filter drop-shadow-md pointer-events-none">${p.emoji}</span>
+                    <span class="text-sm font-black uppercase text-gray-800 bg-white/95 px-4 py-1.5 rounded-full shadow-sm mt-2 pointer-events-none">The ${p.name}</span>
                 </div>
             `).join('');
 
@@ -297,29 +277,14 @@
                      draggable="true" 
                      ondragstart="drag(event, '${c.name}')"
                      onclick="selectCharacterFigure('${c.name}')"
-                     class="character-figure flex flex-col items-center justify-center p-2">
-                    <span class="text-6xl filter drop-shadow-lg pointer-events-none">${c.emoji}</span>
-                    <span class="text-xs font-black uppercase text-coral bg-white/90 px-3 py-1 rounded-full shadow-sm mt-1 pointer-events-none">${c.name}</span>
+                     class="character-figure flex flex-col items-center justify-center p-3">
+                    <span class="text-7xl filter drop-shadow-lg pointer-events-none">${c.emoji}</span>
+                    <span class="text-sm font-black uppercase text-coral bg-white/95 px-4 py-1.5 rounded-full shadow-sm mt-2 pointer-events-none">${c.name}</span>
                 </div>
             `).join('');
 
+            // Attach touch drag listener for mobile & tablet support
             setupTouchDrag();
-
-            // Action Card shows target character with action icon directly
-            document.getElementById('verb-action-card').innerHTML = `
-                <div class="relative flex items-center justify-center">
-                    <span class="text-5xl">${q.charEmoji}</span>
-                    <span class="text-2xl absolute -top-2 -right-2 bg-white rounded-full p-1 shadow border">${q.verbActionEmoji}</span>
-                </div>
-            `;
-            document.getElementById('verb-prompt').innerText = `What action is the ${q.character} doing in the picture card?`;
-            
-            const verbContainer = document.getElementById('verb-options');
-            verbContainer.innerHTML = q.verbOptions.map(v => `
-                <button onclick="checkVerb('${v}', '${q.verb}')" class="px-5 py-2.5 bg-indigo-100 hover:bg-violet hover:text-white text-indigo-900 font-extrabold rounded-2xl shadow-sm transition transform hover:scale-105 active:scale-95">
-                    ${v}
-                </button>
-            `).join('');
 
             const feedback = document.getElementById('game-feedback');
             if (feedback) {
@@ -393,15 +358,6 @@
                     }
                 });
             });
-        }
-
-        function checkVerb(selected, correct) {
-            if (selected === correct) {
-                const praise = getRandomPraise();
-                triggerSuccess(`${praise} The character is ${correct}! 🌟`);
-            } else {
-                speakText("Try another action!");
-            }
         }
 
         function triggerSuccess(msg) {
