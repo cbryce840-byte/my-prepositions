@@ -43,38 +43,28 @@
             backdrop-filter: blur(12px);
             border: 2px solid rgba(255, 255, 255, 0.8);
         }
-        /* Free-floating characters without square tiles */
-        .character-figure {
-            cursor: grab;
-            transition: transform 0.2s ease, filter 0.2s ease;
-            user-select: none;
-            touch-action: none;
-        }
-        .character-figure:active {
-            cursor: grabbing;
-            transform: scale(1.25);
-        }
-        .character-figure.selected {
-            transform: scale(1.3) translateY(-10px);
-            filter: drop-shadow(0 12px 20px rgba(77, 150, 255, 0.6));
-        }
-        /* Free-floating prop targets */
-        .prop-target {
-            transition: all 0.3s ease;
+        .prep-tile {
             cursor: pointer;
-            border-radius: 2rem;
-            user-select: none;
+            transition: all 0.2s ease;
         }
-        .prop-target.highlight, .prop-target:hover {
-            transform: scale(1.15);
-            background-color: rgba(255, 217, 61, 0.35);
-            box-shadow: 0 10px 25px rgba(255, 217, 61, 0.5);
+        .prep-tile:hover {
+            transform: scale(1.08);
+        }
+        .drop-zone {
+            min-width: 110px;
+            border: 3px dashed #4D96FF;
+            background-color: rgba(77, 150, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .drop-zone.filled {
+            border: 3px solid #6BCB77;
+            background-color: rgba(107, 203, 119, 0.2);
         }
     </style>
 </head>
 <body class="text-darkink antialiased p-4 md:p-8 pb-32">
 
-    <div class="max-w-5xl mx-auto space-y-6">
+    <div class="max-w-4xl mx-auto space-y-6">
         
         <!-- HEADER -->
         <header class="glass-card rounded-3xl p-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
@@ -84,9 +74,9 @@
                 </div>
                 <div>
                     <h1 class="text-2xl md:text-3xl font-black text-darkink">
-                        Preposition <span class="text-skyblue">Adventure</span> Game
+                        Preposition <span class="text-skyblue">Worksheet</span> Adventure
                     </h1>
-                    <p class="text-xs text-gray-600 font-bold">Choose the correct character and object from multiple choices, then solve 40 adventures!</p>
+                    <p class="text-xs text-gray-600 font-bold">Look at the picture, read the sentence, and drag the correct preposition tile!</p>
                 </div>
             </div>
 
@@ -104,46 +94,52 @@
         <div class="glass-card rounded-3xl p-6 border-4 border-skyblue/40 bg-gradient-to-r from-sky-50 to-blue-50 shadow-md">
             <div class="flex items-center space-x-3 mb-2">
                 <div class="w-10 h-10 bg-skyblue text-white rounded-2xl flex items-center justify-center text-lg font-black shadow"><i class="fa-solid fa-lightbulb"></i></div>
-                <h3 class="text-xl font-black text-blue-900 uppercase tracking-wide">What is a Preposition?</h3>
+                <h3 class="text-xl font-black text-blue-900 uppercase tracking-wide">Prepositions for Kids:</h3>
             </div>
             <p class="text-base font-extrabold text-gray-800 leading-relaxed">
-                A preposition shows where something is located! Words like <span class="text-coral font-black text-lg">ON</span>, <span class="text-violet font-black text-lg">IN</span>, <span class="text-limegreen font-black text-lg">UNDER</span>, <span class="text-sky-600 font-black text-lg">BESIDE</span>, and <span class="text-amber-600 font-black text-lg">BEHIND</span> tell us the exact position of our cute characters!
+                Prepositions tell us where something is located! (e.g., <span class="text-coral font-black text-lg">on</span>, <span class="text-violet font-black text-lg">in</span>, <span class="text-limegreen font-black text-lg">under</span>, <span class="text-sky-600 font-black text-lg">beside</span>, <span class="text-amber-600 font-black text-lg">behind</span>, <span class="text-indigo-600 font-black text-lg">in front of</span>).
             </p>
         </div>
 
         <!-- MAIN STAGE -->
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-skyblue/30 space-y-6 bg-gradient-to-b from-white to-sky-50">
+        <div class="glass-card rounded-3xl p-6 md:p-10 shadow-2xl border-4 border-skyblue/30 space-y-8 bg-gradient-to-b from-white to-sky-50 text-center">
             
-            <!-- Instruction Prompt Banner -->
-            <div class="bg-indigo-900 text-white rounded-3xl p-6 shadow-lg text-center relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="text-left space-y-1">
-                    <span class="text-xs font-extrabold uppercase px-3 py-1 bg-skyblue text-white rounded-full">Mission Instruction (<span id="quest-counter">1</span> / 40)</span>
-                    <h2 id="instruction-text" class="text-2xl md:text-3xl font-black tracking-wide">
-                        Drag the correct character to the correct object!
-                    </h2>
+            <!-- Instruction Prompt & Listen Button -->
+            <div class="flex items-center justify-between bg-indigo-900 text-white rounded-3xl p-5 shadow-lg">
+                <div class="text-left">
+                    <span class="text-xs font-extrabold uppercase px-3 py-1 bg-skyblue text-white rounded-full">Worksheet Quest (<span id="quest-counter">1</span> / 40)</span>
+                    <h2 class="text-xl md:text-2xl font-black mt-1">Complete the sentence using the picture!</h2>
                 </div>
-                <button onclick="speakInstruction()" class="bg-amber-400 hover:bg-amber-500 text-darkink font-black py-3 px-6 rounded-2xl shadow-md flex items-center space-x-2 transition transform active:scale-95 shrink-0">
+                <button onclick="speakInstruction()" class="bg-amber-400 hover:bg-amber-500 text-darkink font-black py-2.5 px-6 rounded-2xl shadow-md flex items-center space-x-2 transition transform active:scale-95 shrink-0">
                     <i class="fa-solid fa-volume-high text-lg"></i>
                     <span>Listen</span>
                 </button>
             </div>
 
-            <!-- Interactive Play Area with ample height to prevent any cutting off -->
-            <div class="relative w-full min-h-[520px] bg-gradient-to-br from-emerald-50 via-sky-50 to-amber-50 rounded-3xl border-4 border-dashed border-gray-300 flex flex-col justify-between p-6 shadow-inner overflow-visible" id="play-area">
+            <!-- Worksheet Question Card (Picture + Sentence with Drop Zone) -->
+            <div class="bg-white border-4 border-indigo-100 rounded-3xl p-8 shadow-xl flex flex-col md:flex-row items-center justify-center gap-8">
                 
-                <!-- Props Row (Free-floating Drop Targets) -->
-                <div class="flex flex-wrap justify-around items-center gap-6 z-10 py-4" id="props-container">
-                    <!-- Dynamically rendered environmental props -->
+                <!-- Picture Illustration Box -->
+                <div class="w-48 h-48 bg-gradient-to-br from-amber-50 to-pink-50 border-4 border-amber-200 rounded-3xl flex flex-col items-center justify-center p-4 shadow-inner">
+                    <span id="quest-image" class="text-7xl mb-2 animate-bounce-gentle">🐱</span>
+                    <span id="quest-object" class="text-xs font-black uppercase text-amber-900 bg-white px-3 py-1 rounded-full shadow-sm">The Cat & Table</span>
                 </div>
 
-                <!-- Guidance Hint -->
-                <div id="selection-hint" class="text-center font-black text-sm md:text-base text-skyblue bg-white/95 py-2.5 px-6 rounded-full mx-auto shadow-sm my-4">
-                    👆 Drag or Tap a Character below onto the Target Prop above!
+                <!-- Sentence Fill-in-the-blank Box -->
+                <div class="text-left space-y-4 flex-1">
+                    <p class="text-xs font-black uppercase text-gray-400 tracking-wider">Fill in the missing preposition:</p>
+                    <div id="sentence-display" class="text-2xl md:text-3xl font-black text-darkink flex flex-wrap items-center gap-3">
+                        <!-- Rendered dynamically -->
+                    </div>
                 </div>
 
-                <!-- Characters Row (Free-floating Figures - 3 Choices) -->
-                <div class="flex flex-wrap justify-around items-center gap-8 z-20 py-6" id="characters-container">
-                    <!-- Dynamically rendered character choices -->
+            </div>
+
+            <!-- Floating Preposition Word Bank Tiles -->
+            <div class="space-y-3">
+                <p class="text-xs font-black uppercase text-gray-600 tracking-wider">👇 Drag or Tap a Preposition Tile Below 👇</p>
+                <div id="tiles-container" class="flex flex-wrap items-center justify-center gap-4 py-3">
+                    <!-- Rendered dynamically -->
                 </div>
             </div>
 
@@ -153,9 +149,9 @@
             </div>
 
             <!-- Next Quest Button -->
-            <div class="flex justify-center pt-4 pb-8">
+            <div class="flex justify-center pt-2">
                 <button onclick="nextQuest()" class="bg-skyblue hover:bg-blue-600 text-white font-black text-xl py-4 px-12 rounded-2xl shadow-xl transition transform active:scale-95 flex items-center space-x-3">
-                    <span>Next Grammar Quest</span>
+                    <span>Next Worksheet Question</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
@@ -166,23 +162,44 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
-        const ALL_CHARACTERS = [
-            { name: "Monkey", emoji: "🐵" },
-            { name: "Cat", emoji: "🐱" },
-            { name: "Frog", emoji: "🐸" },
-            { name: "Dog", emoji: "🐶" },
-            { name: "Rabbit", emoji: "🐰" }
+        const WORKSHEET_QUESTS = [
+            { subject: "The cat", object: "the table", emoji: "🐱", objEmoji: "🪵", correct: "on", options: ["on", "under", "behind"] },
+            { subject: "The dog", object: "the bed", emoji: "🐶", objEmoji: "🛏️", correct: "under", options: ["under", "on", "beside"] },
+            { subject: "The ball", object: "the chair", emoji: "⚽", objEmoji: "🪑", correct: "behind", options: ["behind", "in", "on"] },
+            { subject: "The bird", object: "the tree", emoji: "🐦", objEmoji: "🌳", correct: "above", options: ["above", "under", "in"] },
+            { subject: "The rabbit", object: "the box", emoji: "🐰", objEmoji: "📦", correct: "inside", options: ["inside", "on", "under"] },
+            { subject: "The bicycle", object: "the wall", emoji: "🚲", objEmoji: "🧱", correct: "beside", options: ["beside", "in", "above"] },
+            { subject: "The flowers", object: "the fence", emoji: "🌷", objEmoji: "🏡", correct: "in front of", options: ["in front of", "behind", "under"] },
+            { subject: "The shoes", object: "the door", emoji: "👟", objEmoji: "🚪", correct: "near", options: ["near", "on", "above"] },
+            { subject: "The puppy", object: "the chairs", emoji: "🐶", objEmoji: "🪑🪑", correct: "between", options: ["between", "on", "under"] },
+            { subject: "The kite", object: "the house", emoji: "🪁", objEmoji: "🏠", correct: "over", options: ["over", "in", "under"] },
+            { subject: "The apple", object: "the table", emoji: "🍎", objEmoji: "🪵", correct: "on", options: ["on", "under", "next to"] },
+            { subject: "The doll", object: "the car", emoji: "🪆", objEmoji: "🚗", correct: "in", options: ["in", "on", "under"] },
+            { subject: "The boy", object: "the box", emoji: "👦", objEmoji: "📦", correct: "behind", options: ["behind", "on", "next to"] },
+            { subject: "The shoes", object: "the table", emoji: "👞", objEmoji: "🪵", correct: "under", options: ["under", "in", "on"] },
+            { subject: "The girl", object: "the chair", emoji: "👧", objEmoji: "🪑", correct: "next to", options: ["next to", "in", "on"] },
+            { subject: "The giraffe", object: "the basket", emoji: "🦒", objEmoji: "🧺", correct: "behind", options: ["behind", "under", "in"] },
+            { subject: "The ratel", object: "the tree", emoji: "🦝", objEmoji: "🌳", correct: "under", options: ["under", "behind", "next to"] },
+            { subject: "The mouse", object: "the chair", emoji: "🐭", objEmoji: "🪑", correct: "under", options: ["under", "in front of", "on"] },
+            { subject: "The clock", object: "the door", emoji: "⏰", objEmoji: "🚪", correct: "above", options: ["above", "on", "under"] },
+            { subject: "The books", object: "the shelf", emoji: "📚", objEmoji: "🪵", correct: "on", options: ["on", "in", "under"] }
         ];
 
-        const ALL_PROPS = [
-            { name: "Box", emoji: "📦" },
-            { name: "Rock", emoji: "🪨" },
-            { name: "Tree", emoji: "🌳" },
-            { name: "Chair", emoji: "🪑" },
-            { name: "Table", emoji: "🪵" }
-        ];
+        // Expand quests to 40 by repeating/cycling with distinct variations
+        const QUESTS = [];
+        for (let i = 0; i < 40; i++) {
+            const base = WORKSHEET_QUESTS[i % WORKSHEET_QUESTS.length];
+            QUESTS.push({
+                ...base,
+                id: i + 1,
+                options: shuffleArray([...base.options])
+            });
+        }
 
-        const PREPOSITIONS = ["ON", "IN", "UNDER", "BESIDE", "BEHIND"];
+        let currentQuestIndex = 0;
+        let score = 0;
+        let isSolved = false;
+        const synth = window.speechSynthesis;
 
         const PRAISE_VARIATIONS = [
             "Fantastic job!",
@@ -198,27 +215,6 @@
             return PRAISE_VARIATIONS[Math.floor(Math.random() * PRAISE_VARIATIONS.length)];
         }
 
-        // Generate 40 unique randomized quests
-        const QUESTS = [];
-        for (let i = 0; i < 40; i++) {
-            const charObj = ALL_CHARACTERS[i % ALL_CHARACTERS.length];
-            const propObj = ALL_PROPS[Math.floor(i / 8) % ALL_PROPS.length];
-            const prep = PREPOSITIONS[i % PREPOSITIONS.length];
-
-            QUESTS.push({
-                character: charObj.name,
-                charEmoji: charObj.emoji,
-                prop: propObj.name,
-                propEmoji: propObj.emoji,
-                preposition: prep
-            });
-        }
-
-        let currentQuestIndex = 0;
-        let score = 0;
-        let selectedCharacter = null;
-        const synth = window.speechSynthesis;
-
         function speakText(text) {
             if (!synth) return;
             synth.cancel();
@@ -230,150 +226,116 @@
 
         function speakInstruction() {
             const q = QUESTS[currentQuestIndex];
-            speakText(`Place the ${q.character} ${q.preposition} the ${q.prop}!`);
+            speakText(`${q.subject} is blank ${q.object}. Choose the correct preposition tile!`);
         }
 
         function loadQuest() {
             const q = QUESTS[currentQuestIndex];
-            selectedCharacter = null;
-            
-            // Instruction Header
-            document.getElementById('quest-counter').innerText = currentQuestIndex + 1;
-            document.getElementById('instruction-text').innerHTML = `Drag the <span class="text-sunny font-black">${q.character}</span> <span class="text-coral underline font-black">${q.preposition}</span> the <span class="text-limegreen font-black">${q.prop}</span>!`;
-            document.getElementById('selection-hint').innerHTML = `👇 Drag or tap the <strong class="text-darkink">${q.character}</strong> onto the <strong class="text-darkink">${q.prop}</strong>!`;
+            isSolved = false;
 
-            // Render 3 Props on Stage (Target Object + 2 Random Choices)
-            const propsContainer = document.getElementById('props-container');
-            const otherProps = ALL_PROPS.filter(p => p.name !== q.prop);
-            const selectedProps = shuffleArray([
-                { name: q.prop, emoji: q.propEmoji },
-                otherProps[0],
-                otherProps[1]
-            ]);
+            document.getElementById('quest-counter').innerText = q.id;
+            document.getElementById('quest-image').innerText = q.emoji;
+            document.getElementById('quest-object').innerText = `${q.subject} & ${q.object}`;
 
-            propsContainer.innerHTML = selectedProps.map(p => `
-                <div onclick="selectPropTarget('${p.name}')"
+            // Sentence with persistent drop zone
+            const sentenceBox = document.getElementById('sentence-display');
+            sentenceBox.innerHTML = `
+                <span>${q.subject} is</span>
+                <div id="drop-slot" 
                      ondragover="allowDrop(event)" 
-                     ondragenter="this.classList.add('highlight')"
-                     ondragleave="this.classList.remove('highlight')"
-                     ondrop="dropOnProp(event, '${p.name}')"
-                     class="prop-target flex flex-col items-center justify-center p-4">
-                    <span class="text-7xl filter drop-shadow-md pointer-events-none">${p.emoji}</span>
-                    <span class="text-sm font-black uppercase text-gray-800 bg-white/95 px-4 py-1.5 rounded-full shadow-sm mt-2 pointer-events-none">The ${p.name}</span>
+                     ondrop="dropTile(event, '${q.correct}')"
+                     onclick="clickDropSlot('${q.correct}')"
+                     class="drop-zone inline-flex items-center justify-center px-4 py-2 rounded-2xl text-skyblue font-black shadow-inner cursor-pointer">
+                    ...
                 </div>
-            `).join('');
+                <span>${q.object}.</span>
+            `;
 
-            // Render 3 Character Choices (Target Character + 2 Random Choices)
-            const charContainer = document.getElementById('characters-container');
-            const otherChars = ALL_CHARACTERS.filter(c => c.name !== q.character);
-            const selectedChars = shuffleArray([
-                { name: q.character, emoji: q.charEmoji },
-                otherChars[0],
-                otherChars[1]
-            ]);
-
-            charContainer.innerHTML = selectedChars.map(c => `
-                <div id="char-fig-${c.name}"
-                     draggable="true" 
-                     ondragstart="drag(event, '${c.name}')"
-                     onclick="selectCharacterFigure('${c.name}')"
-                     class="character-figure flex flex-col items-center justify-center p-3">
-                    <span class="text-7xl filter drop-shadow-lg pointer-events-none">${c.emoji}</span>
-                    <span class="text-sm font-black uppercase text-coral bg-white/95 px-4 py-1.5 rounded-full shadow-sm mt-2 pointer-events-none">${c.name}</span>
-                </div>
-            `).join('');
-
-            // Attach touch drag listener for mobile & tablet support
-            setupTouchDrag();
+            // Render Tiles
+            renderTiles(q.options);
 
             const feedback = document.getElementById('game-feedback');
-            if (feedback) {
-                feedback.classList.add('hidden');
-            }
+            if (feedback) feedback.classList.add('hidden');
             speakInstruction();
         }
 
-        // Drag & Drop Setup
+        function renderTiles(options) {
+            const container = document.getElementById('tiles-container');
+            container.innerHTML = options.map(opt => `
+                <div draggable="true" 
+                     ondragstart="dragTile(event, '${opt}')"
+                     onclick="selectTile('${opt}')"
+                     class="prep-tile bg-gradient-to-r from-coral to-pink-500 text-white font-black text-xl px-6 py-3 rounded-2xl shadow-lg border-2 border-white">
+                    ${opt}
+                </div>
+            `).join('');
+        }
+
+        let draggedTileVal = null;
+
+        function dragTile(ev, val) {
+            draggedTileVal = val;
+            ev.dataTransfer.setData("text/plain", val);
+        }
+
         function allowDrop(ev) {
             ev.preventDefault();
         }
 
-        function drag(ev, charName) {
-            selectedCharacter = charName;
-            ev.dataTransfer.setData("text/plain", charName);
+        function dropTile(ev, correctVal) {
+            ev.preventDefault();
+            const val = ev.dataTransfer.getData("text/plain") || draggedTileVal;
+            checkAnswer(val, correctVal);
         }
 
-        function dropOnProp(ev, propName) {
-            if (ev) ev.preventDefault();
+        function selectTile(val) {
+            if (isSolved) return;
             const q = QUESTS[currentQuestIndex];
+            checkAnswer(val, q.correct);
+        }
 
-            if (selectedCharacter === q.character && propName === q.prop) {
+        function clickDropSlot(correctVal) {
+            if (isSolved) {
+                speakText(`Correct! The preposition is ${correctVal}.`);
+            }
+        }
+
+        function checkAnswer(chosenVal, correctVal) {
+            if (isSolved) return;
+            const slot = document.getElementById('drop-slot');
+
+            if (chosenVal === correctVal) {
+                isSolved = true;
+                slot.innerText = chosenVal;
+                slot.classList.add('filled', 'animate-bounce');
+                slot.classList.remove('drop-zone');
+
+                score += 1;
+                document.getElementById('game-score').innerText = score;
+
                 const praise = getRandomPraise();
-                triggerSuccess(`${praise} The ${q.character} is ${q.preposition} the ${q.prop}! ⭐`);
+                const feedback = document.getElementById('game-feedback');
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-emerald-100', 'text-emerald-800');
+                feedback.innerHTML = `<i class="fa-solid fa-star text-amber-500 text-2xl"></i> <span>${praise} The correct preposition is "${chosenVal}"! ⭐</span>`;
+
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
+                }
+
+                speakText(`${praise} The answer is ${chosenVal}!`);
             } else {
-                speakText(`Not quite! Look for the ${q.character} and the ${q.prop}!`);
-            }
-        }
+                slot.innerText = chosenVal;
+                slot.classList.add('bg-rose-500', 'text-white', 'animate-shake');
+                speakText(`Not quite ${chosenVal}! Try another preposition tile.`);
 
-        function selectCharacterFigure(charName) {
-            selectedCharacter = charName;
-            document.querySelectorAll('.character-figure').forEach(el => el.classList.remove('selected'));
-            const fig = document.getElementById(`char-fig-${charName}`);
-            if (fig) fig.classList.add('selected');
-        }
-
-        function selectPropTarget(propName) {
-            if (!selectedCharacter) {
-                speakText("First drag or tap a character figure below!");
-                return;
-            }
-            dropOnProp(null, propName);
-        }
-
-        function setupTouchDrag() {
-            const figures = document.querySelectorAll('.character-figure');
-            figures.forEach(fig => {
-                fig.addEventListener('touchmove', function(e) {
-                    e.preventDefault();
-                    const touch = e.touches[0];
-                    fig.style.position = 'fixed';
-                    fig.style.left = (touch.clientX - 35) + 'px';
-                    fig.style.top = (touch.clientY - 35) + 'px';
-                    fig.style.zIndex = '1000';
-                }, { passive: false });
-
-                fig.addEventListener('touchend', function(e) {
-                    const touch = e.changedTouches[0];
-                    fig.style.position = 'static';
-                    const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
-                    const propTarget = targetEl ? targetEl.closest('.prop-target') : null;
-                    
-                    const charName = fig.id.replace('char-fig-', '');
-                    selectedCharacter = charName;
-
-                    if (propTarget) {
-                        const onclickAttr = propTarget.getAttribute('onclick');
-                        const propName = onclickAttr ? onclickAttr.match(/'([^']+)'/)[1] : null;
-                        if (propName) dropOnProp(null, propName);
+                setTimeout(() => {
+                    if (!isSolved) {
+                        slot.innerText = "...";
+                        slot.classList.remove('bg-rose-500', 'text-white', 'animate-shake');
                     }
-                });
-            });
-        }
-
-        function triggerSuccess(msg) {
-            score += 1;
-            document.getElementById('game-score').innerText = score;
-            
-            const feedback = document.getElementById('game-feedback');
-            feedback.classList.remove('hidden');
-            feedback.classList.add('bg-emerald-100', 'text-emerald-800');
-            feedback.innerHTML = `<i class="fa-solid fa-star text-amber-500 text-2xl"></i> <span>${msg}</span>`;
-
-            if (typeof confetti === 'function') {
-                confetti({ particleCount: 65, spread: 65, origin: { y: 0.6 } });
+                }, 1000);
             }
-
-            speakText(msg);
         }
 
         function nextQuest() {
